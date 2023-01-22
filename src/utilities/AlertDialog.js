@@ -6,10 +6,19 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 
 import * as Yup from "yup";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function AlertDialog(props) {
   const [isSubmit, setSubmit] = useState(false);
+  let [defaultContact, setDefaultContact] = useState({
+    firstname: '',
+    lastanme: '',
+    tel: '',
+    mobile: '',
+    email: '',
+    rate: '',
+  });
 
   const rates = [
     {
@@ -31,12 +40,12 @@ export default function AlertDialog(props) {
     lastName: Yup.string().required("Required"),
     rate: Yup.string().required("Required"),
     phoneNumber: Yup.string()
-      .min(12, "Too Short!")
-      .max(14, "Too Long!")
+      .min(14, "Too Short!")
+      .max(18, "Too Long!")
       .required("Required"),
     mobileNumber: Yup.string()
-      .min(12, "Too Short!")
-      .max(14, "Too Long!")
+      .min(14, "Too Short!")
+      .max(18, "Too Long!")
       .required("Required"),
     email: Yup.string().email("Invalid email").required("Required"),
   });
@@ -51,12 +60,12 @@ export default function AlertDialog(props) {
       email: "",
       rate: "",
     },
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: async (values, { resetForm }) => {
       setSubmit(true);
       console.log(values);
 
       let newContact = {
-        id: 6,
+        id: '',
         firstname: values.firstName,
         lastanme: values.lastName,
         tel: values.phoneNumber,
@@ -65,7 +74,19 @@ export default function AlertDialog(props) {
         rate: values.rate.split('-'),
         imgPath: "",
       };
+
+
+      if (props.defaultContact.id != null) {
+        newContact.id = props.defaultContact.id
+        await updateContact(newContact)
+      } else {
+        newContact.id = new Date()
+        await saveNewContacts(newContact)
+      }
+
       props.editContact(newContact)
+
+
       setSubmit(false);
       resetForm({
         firstName: "",
@@ -78,6 +99,48 @@ export default function AlertDialog(props) {
       props.handleClose();
     },
   });
+
+  const saveNewContacts = async (newContact) => {
+    try {
+      const result = await  axios.post('http://localhost:4000/contacts', newContact)
+    } catch (error) {
+      
+    }
+  }
+
+  const updateContact = async (updated) => {
+    try {
+      const result = await  axios.put(`http://localhost:4000/contacts/${props.defaultContact.id}`, updated)
+    } catch (error) {
+      
+    }
+  }
+
+
+  React.useEffect(()=> {  
+    if (props.defaultContact != undefined) {
+      setDefaultContact({...props.defaultContact})
+      formik.setFieldValue("firstName", props.defaultContact.firstname)      
+      formik.setFieldValue("lastName", props.defaultContact.lastanme)      
+      formik.setFieldValue("phoneNumber", props.defaultContact.tel)      
+      formik.setFieldValue("mobileNumber", props.defaultContact.mobile)      
+      formik.setFieldValue("email", props.defaultContact.email)        
+    } else {
+      setDefaultContact({
+        firstname: '',
+        lastanme: '',
+        tel: '',
+        mobile: '',
+        email: '',
+        rate: '',
+      })
+    }
+
+  }, [props.defaultContact])
+
+  useEffect(()=> {
+    console.log(props.defaultContact);   
+  }, [])
 
   return (
     <div>
@@ -101,7 +164,7 @@ export default function AlertDialog(props) {
                   id="outlined-basic"
                   label="Lastname"
                   variant="outlined"
-                  value={formik.values.firstName}
+                  defaultValue={defaultContact.firstname}
                   onChange={(event) =>
                     formik.setFieldValue("firstName", event.target.value)
                   }
@@ -114,7 +177,7 @@ export default function AlertDialog(props) {
                   id="outlined-basic"
                   label="Firstname"
                   variant="outlined"
-                  value={formik.values.lastName}
+                  defaultValue={defaultContact.lastanme}
                   onChange={(event) =>
                     formik.setFieldValue("lastName", event.target.value)
                   }
@@ -129,7 +192,7 @@ export default function AlertDialog(props) {
                   id="outlined-basic"
                   label="Phone number"
                   variant="outlined"
-                  value={formik.values.phoneNumber}
+                  defaultValue={defaultContact.tel}
                   onChange={(event) =>
                     formik.setFieldValue("phoneNumber", event.target.value)
                   }
@@ -146,7 +209,7 @@ export default function AlertDialog(props) {
                   id="outlined-basic"
                   label="Mobile number"
                   variant="outlined"
-                  value={formik.values.mobileNumber}
+                  defaultValue={defaultContact.mobile}
                   onChange={(event) =>
                     formik.setFieldValue("mobileNumber", event.target.value)
                   }
@@ -163,7 +226,7 @@ export default function AlertDialog(props) {
                   id="outlined-basic"
                   label="Email"
                   variant="outlined"
-                  value={formik.values.email}
+                  defaultValue={defaultContact.email}
                   onChange={(event) =>
                     formik.setFieldValue("email", event.target.value)
                   }
@@ -178,7 +241,6 @@ export default function AlertDialog(props) {
                   id="outlined-select-currency"
                   select
                   label="Rate"
-                  value={formik.values.rate}
                   onChange={(event) =>
                     formik.setFieldValue("rate", event.target.value)
                   }
@@ -203,7 +265,7 @@ export default function AlertDialog(props) {
                       disabled={!formik.isValid}
                       onClick={formik.handleSubmit}
                     >
-                      Add new contact
+                      {props.name}
                     </button>
                   ) : (
                     <Box sx={{ display: "flex" }}>

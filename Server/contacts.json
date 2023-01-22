@@ -1,0 +1,68 @@
+{
+  "contacts": [
+    {
+      "id": 2,
+      "firstname": "Miraide Augusto",
+      "lastanme": "BASSAM",
+      "tel": "+221 79 590 01 31",
+      "mobile": "+221 79 590 01 31",
+      "email": "kounassolazare@gmail.com",
+      "rate": [
+        1
+      ],
+      "imgPath": ""
+    },
+    {
+      "id": 4,
+      "firstname": "Miraide Augusto",
+      "lastanme": "BASSAM",
+      "tel": "+221 79 590 01 31",
+      "mobile": "+221 79 590 01 31",
+      "email": "kounassolazare@gmail.com",
+      "rate": [
+        1,
+        1,
+        1
+      ],
+      "imgPath": ""
+    },
+    {
+      "id": 6,
+      "firstname": "Miraide Augusto",
+      "lastanme": "BASSAM",
+      "tel": "+221 79 590 01 31",
+      "mobile": "+221 79 590 01 31",
+      "email": "kounassolazare@gmail.com",
+      "rate": [
+        1,
+        1
+      ],
+      "imgPath": ""
+    },
+    {
+      "id": 7,
+      "firstname": "Miraide Augusto",
+      "lastanme": "BASSAM",
+      "tel": "+221 79 590 01 31",
+      "mobile": "+221 79 590 01 31",
+      "email": "kounassolazare@gmail.com",
+      "rate": [
+        1
+      ],
+      "imgPath": ""
+    },
+    {
+      "id": "2023-01-22T16:54:49.314Z",
+      "firstname": "KOUNASSO",
+      "lastanme": "Bassithou",
+      "tel": "+22966248866",
+      "mobile": "+22920222432",
+      "email": "dona@gmail.com",
+      "rate": [
+        "1",
+        "1"
+      ],
+      "imgPath": ""
+    }
+  ]
+}

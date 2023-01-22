@@ -28,6 +28,7 @@ function TitleComponent(props) {
 
   const addNewContact = (newContact) =>{
     // TODO EMIT NEW CONTACT TO PARENT
+    props.editContact(newContact)
   }
 
   return (

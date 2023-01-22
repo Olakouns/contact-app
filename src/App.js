@@ -1,98 +1,20 @@
 import "./App.scss";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TitleComponent from "./components/TitleComponent";
 import { InputAdornment, TextField } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ContactItemComponent from "./components/ContactItemComponent";
 import ContactDetails from "./components/ContactDetails";
+import axios from "axios";
 
 function App() {
-  const contacts = [
-    {
-      id: 1,
-      firstname: "Lazare Razacki",
-      lastanme: "KOUNASSO",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1, 1, 1],
-      imgPath: "",
-    },
-    {
-      id: 2,
-      firstname: "Miraide Augusto",
-      lastanme: "BASSAME",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1],
-      imgPath: "",
-    },
-    {
-      id: 3,
-      firstname: "Miraide Augusto",
-      lastanme: "BASSAME",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1, 1],
-      imgPath: "",
-    },
-    {
-      id: 4,
-      firstname: "Miraide Augusto",
-      lastanme: "BASSAME",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1, 1, 1],
-      imgPath: "",
-    },
-    {
-      id: 5,
-      firstname: "Miraide Augusto",
-      lastanme: "BASSAME",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1],
-      imgPath: "",
-    },
-    {
-      id: 6,
-      firstname: "Miraide Augusto",
-      lastanme: "BASSAME",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1, 1],
-      imgPath: "",
-    },
-    {
-      id: 7,
-      firstname: "Miraide Augusto",
-      lastanme: "BASSAME",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1],
-      imgPath: "",
-    },
-    {
-      id: 8,
-      firstname: "Miraide Augusto",
-      lastanme: "BASSAME",
-      tel: "+221 79 590 01 31",
-      mobile: "+221 79 590 01 31",
-      email : "kounassolazare@gmail.com",
-      rate: [1, 1],
-      imgPath: "",
-    },
-  ];
+  // const contacts = [ ];
 
   const [isShowDetails, setShowDetails] = useState(false);
   const [contact, setContact] = useState({});
+  const [contacts, setContacts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const showDetails = (contact) => {
@@ -101,6 +23,43 @@ function App() {
     setShowDetails(true);
   };
 
+  const getAllContacts = async ()=> {
+    try {
+      setIsLoading(true)
+      const contactList = await axios.get('http://localhost:4000/contacts');
+      setContacts(contactList.data)
+    } catch (error) {
+      
+    }
+    setIsLoading(false)
+  }
+
+  const editContact = (contact) => {
+    setContacts((previous)=> [contact, ...previous])
+  }
+
+  const updateContact = async (contact) => {
+    let index = contacts.filter(element => element.id == contact.id)
+
+    if (index != -1) {
+      const reports = [...contacts]
+      reports[index] = contact;
+      // setContacts(reports);
+      setContact(contact);
+      await getAllContacts()
+
+    }
+  }
+
+  const deleteEmit = async () => {
+    setShowDetails(false);
+    await getAllContacts();
+  }
+
+  useEffect(()=> {
+    getAllContacts()
+  }, [])
+
   return (
     <div className="position-relative parent-h d-flex justify-content-center">
       <div className="global position-absolute">
@@ -108,7 +67,7 @@ function App() {
           <div className="pane-left">
             <div className="title-height">
               {/* TITLE COMPONENT */}
-              <TitleComponent />
+              <TitleComponent editContact = {editContact}/>
 
               {/* SEARCH ELEMENT */}
 
@@ -149,7 +108,7 @@ function App() {
             {/* DEFAULT CONTENT */}
             {isShowDetails ? (
               <div>
-                <ContactDetails contact = {contact} />
+                <ContactDetails editContact = {updateContact} contact = {contact} deleteEmit = {deleteEmit} />
               </div>
             ) : (
               <div className="default-content">
